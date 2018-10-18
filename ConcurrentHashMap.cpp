@@ -48,7 +48,7 @@ ConcurrentHashMap::ConcurrentHashMap(ConcurrentHashMap&& otro){
     cantWords.store(otro.cantWords.load());
 }
 
-void ConcurrentHashMap::operator=(ConcurrentHashMap otro){
+ConcurrentHashMap::ConcurrentHashMap(ConcurrentHashMap& otro){
     for (int i = 0; i < 26; i++){
         tabla[i] = otro.tabla[i];
         otro.tabla[i] = NULL;
@@ -56,6 +56,20 @@ void ConcurrentHashMap::operator=(ConcurrentHashMap otro){
     }
     max = otro.max;
     cantWords.store(otro.cantWords.load());
+}
+
+ConcurrentHashMap& ConcurrentHashMap::operator=(ConcurrentHashMap& otro){
+    list<string> l = otro.keys();
+    for (auto it = l.begin(); it != l.end(); it++)
+    {   
+        int cant_repeticiones = otro.value(*it);
+        for (int i = 0; i < cant_repeticiones; i++)
+        {
+            addAndInc(*it);
+        }
+    }
+
+    return *this;
 }
 
 void ConcurrentHashMap::addAndInc(string key) {
