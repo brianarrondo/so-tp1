@@ -9,7 +9,7 @@ LDLIBS = -lpthread
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c $<
 
-BIN = test-1-run test-2-run test-3-run
+BIN = test-1 test-2 test-3 test-1-run test-2-run test-3-run
 OBJ = ConcurrentHashMap.o
 
 all: $(BIN)
@@ -18,7 +18,7 @@ $(BIN): ListaAtomica.hpp
 
 test-1: $(OBJ) test-1.cpp test.hpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test.hpp test-1.cpp $(LDLIBS)
-	
+
 test-1-run: test-1
 	awk -f corpus.awk corpus | sort >corpus-post
 	./test-1 | sort | diff -u - corpus-post
@@ -47,6 +47,32 @@ test-3-run: test-3
 		./test-3 $$((i + 1)) $$((j + 1)) | diff -u - corpus-max; \
 	done; done
 	rm -f corpus-max corpus-[0-4]
+
+test-tiempo: $(OBJ) test_tiempos.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_tiempos.cpp $(LDLIBS)
+
+test-tiempo-run: test-tiempo
+	python3 generador_corpus.py
+	python3 correr_test_tiempo.py
+
+test-correctitud: $(OBJ) test_count_words_2.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_count_words_2.cpp $(LDLIBS)
+
+test-correctitud-run: test-correctitud
+	python3 generador_corpus.py
+	./test-correctitud
+
+test-hashmap: $(OBJ) test_hashmap.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_hashmap.cpp $(LDLIBS)
+
+test-hashmap-run: test-hashmap
+	./test-hashmap
+
+test-lista: $(OBJ) test_lista.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_lista.cpp $(LDLIBS)
+
+test-lista-run: test-lista
+	./test-lista
 
 clean:
 	rm -f $(BIN) $(OBJ)
