@@ -21,8 +21,6 @@ public:
     ConcurrentHashMap();
     ~ConcurrentHashMap();
     ConcurrentHashMap(ConcurrentHashMap&& otro);
-    //Tenemos dos constructores por copia, osea esta mal, tenemos que llevar todo al
-    //constructor ConcurrentHashMap(ConcurrentHashMap& otro);
     ConcurrentHashMap(ConcurrentHashMap& otro);
     ConcurrentHashMap& operator=(ConcurrentHashMap& otro);
 

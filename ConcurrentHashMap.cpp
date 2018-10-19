@@ -271,13 +271,13 @@ void* countWordsArbitraryFromArguments(void * args){
     while(true){
         pthread_mutex_lock(mutex);
         if (!files->empty()){
-            fichero = files->front();
+            file = files->front();
             files->pop_front();
         }else{
-            fichero.clear();
+            file.clear();
         }
         pthread_mutex_unlock(mutex);
-        if (fichero.empty()) 
+        if (file.empty()) 
             return NULL;
         countWordsInFileToConcurrentHashMap(file, map);
     }
