@@ -207,7 +207,7 @@ ostream &ConcurrentHashMap::operator<<(ostream &os) {
 struct argsCountWords {
     string path;
     list <string> *files;
-    atomic_int *index;
+    pthread_mutex_t* mutex;
     ConcurrentHashMap *map;
 };
 
@@ -264,21 +264,21 @@ static ConcurrentHashMap countWordsOneThreadPerFile(list <string> filePaths) {
 void* countWordsArbitraryFromArguments(void * args){
     argsCountWords* acw = (argsCountWords*)args;
     ConcurrentHashMap* map = acw->map;
+    pthread_mutex_t* mutex = acw->mutex;
     list<string>* files = acw->files;
-    atomic_int* i_arch = acw->index;
 
     string file;
     while(true){
-        int i = atomic_fetch_add(i_arch, 1); // Atómico, devuelve valor anterior
-
-        if (i < files->size()){
-            list<string>::iterator it = files->begin();
-            advance(it, i);
-            file = *it;
+        pthread_mutex_lock(mutex);
+        if (!files->empty()){
+            fichero = files->front();
+            files->pop_front();
         }else{
-            return NULL; // Terminé
+            fichero.clear();
         }
-
+        pthread_mutex_unlock(mutex);
+        if (fichero.empty()) 
+            return NULL;
         countWordsInFileToConcurrentHashMap(file, map);
     }
 }
@@ -287,13 +287,13 @@ static ConcurrentHashMap countWordsArbitraryThreads(unsigned int n, list <string
     ConcurrentHashMap map;
     pthread_t thread[n];
     argsCountWords args[n];
-    atomic_int index;
-    index.store(0);
+    pthread_mutex_t lock;
+    pthread_mutex_init(&lock, NULL);
 
     for(int i = 0; i < n; i++){
         args[i].files = &filePaths;
         args[i].map = &map;
-        args[i].index = &index;
+        args[i].mutex = &lock;
     }
 
     for(int i = 0; i < n; i++)
@@ -311,13 +311,13 @@ maximumOne(unsigned int readingThreads, unsigned int maxingThreads, list <string
     ConcurrentHashMap maps[readingThreads];
     pthread_t thread[readingThreads];
     argsCountWords args[readingThreads];
-    atomic_int index;
-    index.store(0);
+    pthread_mutex_t lock;
+    pthread_mutex_init(&lock, NULL);
 
     for(int i = 0; i < readingThreads; i++){
         args[i].files = &filePaths;
         args[i].map = &maps[i];
-        args[i].index = &index;
+        args[i].mutex = &lock;
     }
 
     for(int i = 0; i < readingThreads; i++)
