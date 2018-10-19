@@ -15,8 +15,8 @@ int main(){
         path += to_string(i);
         archivos.push_back(path);
     }
-    ConcurrentHashMap h(count_words(archivos));
-    ConcurrentHashMap h_2(count_words(3, archivos));
+    ConcurrentHashMap h(countWordsOneThreadPerFile(archivos));
+    ConcurrentHashMap h_2(countWordsArbitraryThreads(3, archivos));
 
     pair<string, unsigned int> max = h.maximum(4);
     pair<string, unsigned int> max_2 = h_2.maximum(4);
