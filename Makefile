@@ -55,8 +55,8 @@ test-tiempo-run: test-tiempo
 	python3 generador_corpus.py
 	python3 correr_test_tiempo.py
 
-test-correctitud: $(OBJ) test_count_words_2.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_count_words_2.cpp $(LDLIBS)
+test-correctitud: $(OBJ) test_count_words.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ test_count_words.cpp $(LDLIBS)
 
 test-correctitud-run: test-correctitud
 	python3 generador_corpus.py
