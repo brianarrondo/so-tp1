@@ -1,6 +1,6 @@
 #include <iostream>
 #include <pthread.h>
-#include "ConcurrentHashMap.hpp"
+#include "ConcurrentHashMap.cpp"
 #include <list>
 #include <string>
 
@@ -22,9 +22,9 @@ int main(int argc, const char** argv){
     }
 
     cout<< cantThreads<<", "<<cantArchivos<<", ";
-    pair<string, unsigned int> maximo = maximum(cantThreads, 6, archivos);
+    pair<string, unsigned int> maximum1 = maximumOne(cantThreads, 6, archivos);
     cout<<", ";
-    pair<string, unsigned int> maximo_ = maximum_c(cantThreads, 6, archivos);
+    pair<string, unsigned int> maximum2 = maximumTwo(cantThreads, 6, archivos);
     cout<<"\n";
 
     return 0;

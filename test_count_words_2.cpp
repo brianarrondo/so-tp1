@@ -1,6 +1,6 @@
 #include <iostream>
 #include <pthread.h>
-#include "ConcurrentHashMap.hpp"
+#include "ConcurrentHashMap.cpp"
 #include <list>
 #include <cassert>
 #include <string>

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <pthread.h>
-#include "ConcurrentHashMap.hpp"
+#include "ConcurrentHashMap.cpp"
 
 #define  CANT_THREADS  10
 #define  CANT_ELEM     10000
